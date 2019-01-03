@@ -13,8 +13,10 @@ export class SignInService {
     private http: HttpClient,
     private userService: UserService) { }
 
-  login(email: string, password: string) {
-    this.http.post('your-api', { email, password })
+  // login(email: string, password: string) {
+  login() {
+    // this.http.post('./api.txt', { email, password })
+    return this.http.get('assets/api.json')
       .pipe(
         tap((response: any) => {
           this.userService.setUserToken(response.token);

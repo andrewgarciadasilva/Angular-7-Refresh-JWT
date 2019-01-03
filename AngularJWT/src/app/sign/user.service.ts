@@ -3,6 +3,7 @@ import { TokenService } from './token.service';
 
 import * as jwt_decode from 'jwt-decode';
 import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { BehaviorSubject } from 'rxjs';
 
 export class UserService {
   private userSubject = new BehaviorSubject<any>(null);
-  constructor(private tokenService: TokenService) { }
+  constructor(private tokenService: TokenService, private router: Router) { }
 
   decodeAndNotify() {
     const token = this.tokenService.getToken();
@@ -18,9 +19,7 @@ export class UserService {
     const claims = jwt_decode(token);
     const user: any = {
       email: claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
-      exp: claims['exp'],
-      iss: claims['iss'],
-      aud: claims['aud']
+      exp: claims['exp']
     };
 
     this.userSubject.next(user);
@@ -39,6 +38,7 @@ export class UserService {
     this.tokenService.removeToken();
     this.tokenService.removeTimeRefreshToken();
     this.userSubject.next(null);
+    return this.router.navigate(['/']);
   }
 
   get isLogged() {
